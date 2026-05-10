@@ -1,0 +1,20 @@
+# Fichiers temporaires
+*.tmp
+*.swp
+*~
+
+# Backups
+*.bak
+*.backup
+
+# Dossiers sensibles
+VERACRYPT_BACKUP/
+*.vc
+*.hc
+
+# KeePass
+*.kdbx~
+*.kdbx.lock
+
+# Logs
+*.log
