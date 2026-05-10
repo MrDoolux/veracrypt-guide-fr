@@ -10,7 +10,7 @@ Le résultat est **entièrement cross-platform** (Windows, Linux, Mac).
 
 ---
 
-## Sommaire
+## Sommaire : 
 - [Pourquoi VeraCrypt ?](#pourquoi-veracrypt)
 - [1. Installation](#1-installation-de-veracrypt)
 - [2. Identifier ton disque](#2-identifier-ton-disque)
@@ -33,7 +33,7 @@ Le résultat est **entièrement cross-platform** (Windows, Linux, Mac).
 
 ---
 
-## 1. Installation de VeraCrypt
+## 1. Installation de VeraCrypt.
 
 ```bash
 cd ~/Downloads
@@ -49,7 +49,7 @@ veracrypt
 
 ---
 
-## 2. Identifier ton disque (⚠️ CRITIQUE)
+## 2. Identifier ton disque (⚠️ CRITIQUE).
 
 ```bash
 lsblk -f
@@ -59,7 +59,7 @@ lsblk -f
 
 ---
 
-## 3. Chiffrement du disque
+## 3. Chiffrement du disque.
 
 ```bash
 sudo veracrypt -t --create /dev/sdb1
@@ -76,7 +76,7 @@ Bouge ta souris jusqu’à **100 %** d’entropie.
 
 ---
 
-## 4. Mode Hidden Volume (Plausible Deniability)
+## 4. Mode Hidden Volume (Plausible Deniability).
 
 Pendant la création, choisis **Hidden VeraCrypt volume** à la place de Standard.  
 Tu auras deux passphrases :
@@ -87,7 +87,7 @@ Très utile en cas de contrainte ou perquisition.
 
 ---
 
-## 5. Keyfiles & KeePass
+## 5. Keyfiles & KeePass.
 
 **Recommandation forte :** Utilise **1 ou 2 keyfiles** + KeePass pour gérer tes passphrases.
 
@@ -97,7 +97,7 @@ Très utile en cas de contrainte ou perquisition.
 
 ---
 
-## 6. Backup du Header (très important !)
+## 6. Backup du Header (très important !).
 
 ```bash
 mkdir -p ~/VERACRYPT_BACKUP
@@ -108,7 +108,7 @@ Fais ça **après chaque chiffrement**.
 
 ---
 
-## 7. Monter & Démonter
+## 7. Monter & Démonter.
 
 **Script automatique recommandé :**
 
@@ -133,16 +133,17 @@ sudo veracrypt -t -d /dev/sdb1   # pour démonter
 
 ---
 
-## 8. Guide Windows
+## 8. Guide Windows.
 
-- Installe VeraCrypt depuis le site officiel
+- Installe VeraCrypt depuis le site officiel : 
+-  https://www.veracrypt.fr
 - Désactive **Fast Startup** (recommandé)
 - Utilise la même passphrase + keyfiles
 - Procédure quasi identique via l’interface graphique
 
 ---
 
-## Warnings Importants
+## Warnings Importants.
 
 > **⚠️ Attention**  
 > - Perte de la passphrase ou du keyfile = **perte définitive** des données  
