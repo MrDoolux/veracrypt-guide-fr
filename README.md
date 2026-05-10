@@ -1,124 +1,158 @@
-# Guide Complet : Chiffrer un Disque Externe avec VeraCrypt sur Linux.
+# Guide Complet VeraCrypt 2026
 
-**Version détaillée pour débutants** — Mai 2026.
+**Chiffrer ses disques durs (Linux & Windows)** — Version détaillée pour débutants
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Kali Linux](https://img.shields.io/badge/Distro-Kali%20Linux-blue?logo=kali)](https://www.kali.org)
+![Kali](https://img.shields.io/badge/Distro-Kali%20Linux-blue)
+![Windows](https://img.shields.io/badge/Platform-Windows-blue)
 
-Ce guide t’explique **pas à pas** comment chiffrer complètement un disque dur externe (SSD ou HDD) avec **VeraCrypt** sur Kali Linux.  
-Le résultat est **cross-platform** : tu pourras l’utiliser sur Windows, Linux et Mac.
+Ce repository contient un guide complet pour chiffrer des disques externes avec **VeraCrypt** de façon sécurisée et portable.
 
 ---
 
-## Sommaire :
+## Sommaire
 - [Pourquoi VeraCrypt ?](#pourquoi-veracrypt)
-- [1. Installation](#1-installation-de-veracrypt)
-- [2. Identifier ton disque](#2-identifier-ton-disque)
+- [1. Installation](#1-installation)
+- [2. Identifier le disque](#2-identifier-le-disque)
 - [3. Chiffrement du disque](#3-chiffrement-du-disque)
-- [4. Monter & Démonter](#4-monter--démonter)
-- [5. Script de montage automatique](#5-script-de-montage-automatique)
-- [Warnings importants](#warnings-importants)
+- [4. Mode Hidden Volume](#4-mode-hidden-volume)
+- [5. Keyfiles & KeePass](#5-keyfiles--keepass)
+- [6. Backup du Header](#6-backup-du-header)
+- [7. Monter / Démonter](#7-monter--démonter)
+- [8. Guide Windows](#8-guide-windows)
+- [Warnings Importants](#warnings-importants)
 
 ---
 
 ## Pourquoi VeraCrypt ?
 
-- Chiffrement AES ultra-sécurisé  
-- Compatible Windows / Linux / Mac  
-- Gratuit, open source et sans backdoor  
-- **Si tu perds ta passphrase → les données sont perdues pour toujours**
+- Chiffrement AES très robuste
+- Cross-platform (Windows, Linux, Mac)
+- Gratuit, open source, sans backdoor
+- **Perte de passphrase = perte définitive**
 
 ---
 
-## 1. Installation de VeraCrypt.
+## 1. Installation
 
+**Sur Kali Linux :**
 ```bash
 cd ~/Downloads
 wget https://launchpad.net/veracrypt/trunk/1.26.24/+download/veracrypt-1.26.24-setup.tar.bz2
 tar -xvf veracrypt-1.26.24-setup.tar.bz2
 sudo ./veracrypt-1.26.24-setup-gui-x64
 ```
-
 Lance ensuite :
 ```bash
 veracrypt
 ```
 
+
+**Sur Windows :** Télécharge depuis https://www.veracrypt.fr
+
 ---
 
-## 2. Identifier ton disque (⚠️ TRÈS IMPORTANT).
+## 2. Identifier le disque
 
 ```bash
 lsblk -f
 ```
 
-**Ne jamais toucher `/dev/sda`** (c’est ton disque système).
+**⚠️ Ne jamais chiffrer `/dev/sda` !**
 
 ---
 
-## 3. Chiffrement du disque.
-
-### Méthode recommandée (ligne de commande) :
+## 3. Chiffrement du disque
 
 ```bash
 sudo veracrypt -t --create /dev/sdb1
 ```
 
-**Réponses à donner :**
-- Volume type → `1` (Standard)
-- Encryption algorithm → `AES`
-- Hash algorithm → `SHA-512`
-- Filesystem → `exFAT` (recommandé)
-- Passphrase → **phrase longue et forte** (30+ caractères avec espaces)
+Réponses recommandées :
 
-Bouge ta souris jusqu’à **100 %** d’entropie.
+Volume type → 1 (Standard)
+Encryption algorithm → AES
+Hash algorithm → SHA-512
+Filesystem → exFAT (meilleur choix cross-platform)
+Passphrase → phrase longue (30+ caractères avec espaces)
+
+Bouge ta souris et tape sur le clavier jusqu’à 100 % d’entropie.
 
 ---
 
-## 4. Monter & Démonter.
+## 4. Mode Hidden Volume (Plausible Deniability)
 
-**Monter :**
+Choisis l’option **Hidden VeraCrypt volume** pendant la création.  
+Tu auras deux passphrases :
+- Une faible (pour les données visibles)
+- Une forte (pour le volume caché)
+
+
+---
+
+## 5. Keyfiles & KeePass
+
+**Recommandation forte :** Utilise **1 ou 2 keyfiles** + KeePass pour gérer tes passphrases.
+
+- Crée une base KeePass chiffrée
+- Stocke-y toutes tes passphrases VeraCrypt
+- Utilise un keyfile (photo, PDF, etc.) que tu ne modifieras jamais
+
+---
+
+## 6. Backup du Header (très important !)
+
+```bash
+mkdir -p ~/VERACRYPT_BACKUP
+sudo veracrypt --save-volume-header-backup /dev/sdb1 ~/VERACRYPT_BACKUP/header_sdb1.vc
+```
+
+Fais ça **après chaque chiffrement**.
+
+---
+
+## 7. Monter / Démonter
+
+Monter :
 ```bash
 sudo mkdir -p /mnt/veracrypt
 sudo veracrypt -t /dev/sdb1 /mnt/veracrypt
 ```
 
-**Démonter :**
+Démonter :
 ```bash
 sudo veracrypt -t -d /dev/sdb1
 ```
 
----
 
-## 5. Script de montage automatique (très pratique).
-
+**Script automatique :**
 ```bash
 cat > ~/mount-veracrypt << 'EOF'
 #!/bin/bash
-echo "🔐 Montage du disque VeraCrypt..."
 sudo mkdir -p /mnt/veracrypt
 sudo veracrypt -t /dev/sdb1 /mnt/veracrypt
-echo "✅ Disque monté sur /mnt/veracrypt"
 EOF
-
-chmod +x ~/mount-veracrypt
-sudo cp ~/mount-veracrypt /usr/local/bin/
 ```
 
-Après ça, il te suffit de taper :
-```bash
-mount-veracrypt
-```
+Puis `mount-veracrypt` et `sudo veracrypt -t -d /dev/sdb1`
 
 ---
 
-## Warnings Importants.
+## 8. Guide Windows
 
-<div style="background:#330000; padding:15px; border-left:5px solid #ff4444; border-radius:6px;">
-<strong>⚠️ Attention :</strong><br>
-• Perte de la passphrase = perte définitive des données (aucun backdoor)<br>
-• Toujours vérifier avec <code>lsblk -f</code> avant de chiffrer<br>
-• Faire un backup du header après chiffrement
-</div>
+- Installe VeraCrypt
+- Désactive **Fast Startup** (recommandé)
+- Même procédure que sur Linux via l’interface graphique
+- Utilise le même keyfile et passphrase
 
 ---
+
+## Warnings Importants
+
+> **⚠️ Attention**  
+> - Perte de la passphrase ou du keyfile = **perte définitive**  
+> - Toujours vérifier le disque avec `lsblk -f`  
+> - Ne jamais utiliser `--quick` sur des données importantes
+
+---
+
